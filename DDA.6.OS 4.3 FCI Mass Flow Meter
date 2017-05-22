@@ -1,0 +1,1513 @@
+'Certified Technologies, Isaac CR6.CR6
+'CR6 Series
+
+'Created by by Isaac Snyder for Certified Technologies
+
+'Declare Variables and Units
+PreserveVariables
+
+Public BattV
+Public PTemp_C
+
+'========================================================================
+'Research & Development
+'Hello World!
+'========================================================================
+'Emissions
+'------------------------------------------------------------------------
+Public GasAnalysis(14) As Float
+Public ModBusResult
+Public Precisive5 As Long
+
+Alias GasAnalysis(1) = Methane
+Alias GasAnalysis(2) = Ethane
+Alias GasAnalysis(3) = Propane
+Alias GasAnalysis(4) = IsoButane
+Alias GasAnalysis(5) = nButane
+Alias GasAnalysis(6) = IsoPentane
+Alias GasAnalysis(7) = PercentBalance
+Alias GasAnalysis(8) = Unknown
+Alias GasAnalysis(9) = GasCellPressure
+Alias GasAnalysis(10) = GasCellTemperature
+Alias GasAnalysis(11) = LightSourceIntensity
+Alias GasAnalysis(12) = LightSourceBaselineNoise
+Alias GasAnalysis(13) = CV
+Alias GasAnalysis(14) = WI
+
+Public MassFlow
+Public MassFlowTotal
+
+Public FCIMassFlow
+Public FCIMassFlowTotal
+
+'------------------------------------------------------------------------
+'Mini-Hydra Variables
+'------------------------------------------------------------------------
+Public MiniHydra(5) As Long
+Public MiniHydraResult
+
+Public Scale
+Public Bio
+Public Gel
+Public FR
+Public PoP
+
+Public ScaleTotal
+Public BioTotal
+Public GelTotal
+Public FRTotal
+Public PoPTotal
+
+Public ScaleReset
+Public BioReset
+Public GelReset
+Public FRReset
+Public PoPReset
+
+Alias MiniHydra(1) = ScaleRaw
+Alias MiniHydra(2) = BioRaw
+Alias MiniHydra(3) = GelRaw
+Alias MiniHydra(4) = FRRaw
+Alias MiniHydra(5) = PoPRaw
+
+'------------------------------------------------------------------------
+'Chemical Skid Units
+'------------------------------------------------------------------------
+Units Scale = GPM
+Units Bio = GPM
+Units Gel = GPM
+Units FR = GPM
+Units PoP = GPM
+
+'Units ScaleTotal = Gallons
+'Units BioTotal = Gallons
+'Units GelTotal = Gallons
+'Units FRTotal = Gallons
+'Units PoPTotal = Gallons
+
+'------------------------------------------------------------------------
+'Automatic Joint and Plug Counters
+'------------------------------------------------------------------------
+Public PlugCount(2)
+Public JointCount(2)
+Public PlugTimer(2)
+Public JointTimer(2)
+
+'------------------------------------------------------------------------
+'Software Totalizer
+'------------------------------------------------------------------------
+'Public Clean_Rate_1_Total
+'Public Dirty_Rate_1_Total
+
+'------------------------------------------------------------------------
+'AutoStrap Variables
+'------------------------------------------------------------------------
+Public AutoStrapAlpha  'Gas Buster AutoStrap
+Public AutoStrapOmega
+Public AutoStrap
+Public AutoStrapButton As Boolean
+Public AutoStrapTimer
+
+Public AutoStrapAlphaOTT  'OTT AutoStrap
+Public AutoStrapOmegaOTT
+Public AutoStrapOTT
+Public AutoStrapButtonOTT As Boolean
+Public AutoStrapTimerOTT
+
+'------------------------------------------------------------------------
+'Tank Level Program Calibration
+'------------------------------------------------------------------------
+Public LowLevelLimit(14)
+Public TankMult(14)
+Public TankOffs(14)
+Public GasBusterTankMenu(2), OTTTankMenu(2), Brine1TankMenu(2), Brine2TankMenu(2), Brine3TankMenu(2), Brine4TankMenu(2), FreshTankMenu(2)
+
+'------------------------------------------------------------------------
+'XBee
+'------------------------------------------------------------------------
+'Public XBee As String * 28
+'Public XBeeHex As String * 1023
+'Public XBeeR As String * 1023
+'Public XBeeB As String * 1023
+'Public XBeeASCII As String * 28
+'Public XBeeCHR
+'Public NBytesReturned
+'Public XBeeWait
+'
+''Defining each byte?
+'Public StartDelimeter
+'Public Length(2)
+'Public FrameType
+'Public SixteenBitAddress(2)
+'Public RSSI
+'Public Options
+'Public NumberOfSamples
+'Public AnalogChannelMask(2)
+'Public AnalogValue(2)
+'Public Check
+'------------------------------------------------------------------------
+'Const NAN = 0
+'========================================================================
+'Thank you for your cooperation. The cake is not a lie
+'========================================================================
+
+'''*******************************************************
+'''Ops 1, CDM 1
+'''*******************************************************
+Public Measure_1_1
+Alias Measure_1_1 = GasBuster_Level_1
+Public Measure_1_2
+Alias Measure_1_2 = OTT_Level_1
+Public Measure_1_3
+Alias Measure_1_3 = Brine_1_Level_1
+Public Measure_1_4
+Alias Measure_1_4 = Brine_2_Level_1
+Public Measure_1_5
+Alias Measure_1_5 = Brine_3_Level_1
+Public Measure_1_6
+Alias Measure_1_6 = Brine_4_Level_1
+Public Measure_1_7
+Alias Measure_1_7 = Fresh_Level_1
+Public Measure_1_8 'Currently not in use
+Public Measure_1_9
+Alias Measure_1_9 = Press_Clean_Raw_1
+Public Measure_1_10
+Alias Measure_1_10 = Press_Dirty_Raw_1
+Public Measure_1_11
+Alias Measure_1_11 = Clean_Rate_1
+Public Measure_1_12
+Alias Measure_1_12 = Dirty_Rate_1
+Public Measure_1_13
+Alias Measure_1_13 = Temp_Clean_Raw_1
+Public Measure_1_14
+Alias Measure_1_14 = Temp_Dirty_Raw_1
+Public Measure_1_15
+Alias Measure_1_15 = Gas_Sensor
+Public Measure_1_16
+Alias Measure_1_16 = GasSensor_1_2
+
+
+'========================================================================
+'Ops 2, CDM 2
+'========================================================================
+Public Measure_2_1
+Alias Measure_2_1 = GasBuster_Level_2
+Public Measure_2_2
+Alias Measure_2_2 = OTT_Level_2
+Public Measure_2_3
+Alias Measure_2_3 = Brine_1_Level_2
+Public Measure_2_4
+Alias Measure_2_4 = Brine_2_Level_2
+Public Measure_2_5
+Alias Measure_2_5 = Brine_3_Level_2
+Public Measure_2_6
+Alias Measure_2_6 = Brine_4_Level_2
+Public Measure_2_7
+Alias Measure_2_7 = Fresh_Level_2
+Public Measure_2_8 'Currently not in use
+Public Measure_2_9
+Alias Measure_2_9 = Press_Clean_Raw_2
+Public Measure_2_10
+Alias Measure_2_10 = Press_Dirty_Raw_2
+Public Measure_2_11
+Alias Measure_2_11 = Clean_Rate_2
+Public Measure_2_12
+Alias Measure_2_12 = Dirty_Rate_2
+Public Measure_2_13
+Alias Measure_2_13 = Temp_Clean_Raw_2
+Public Measure_2_14
+Alias Measure_2_14 = Temp_Dirty_Raw_2
+Public Measure_2_15
+Alias Measure_2_15 = Gas_Sensor_2
+Public Measure_2_16
+Alias Measure_2_16 = GasSensor_2_2
+
+'========================================================================
+'Public Variables and stuff?
+'========================================================================
+
+Public CDMBattV_1
+Public CDMBattV_2
+Public CDMBattV_3
+Public CDMBattV_4
+Public CDMPTempC_1(4)
+Public CDMPTempC_2(4)
+Public CDMPTempC_3(4)
+Public CDMPTempC_4(4)
+
+Units CDMBattV_1=Volts
+Units CDMBattV_2=Volts
+Units CDMBattV_3=Volts
+Units CDMBattV_4=Volts
+
+Alias CDMPTempC_1(1)=CDM1PTempC1
+Alias CDMPTempC_1(2)=CDM1PTempC2
+Alias CDMPTempC_1(3)=CDM1PTempC3
+Alias CDMPTempC_1(4)=CDM1PTempC4
+Alias CDMPTempC_2(1)=CDM1PTempC1_2
+Alias CDMPTempC_2(2)=CDM1PTempC2_2
+Alias CDMPTempC_2(3)=CDM1PTempC3_2
+Alias CDMPTempC_2(4)=CDM1PTempC4_2
+Alias CDMPTempC_3(1)=CDM1PTempC1_3
+Alias CDMPTempC_3(2)=CDM1PTempC2_3
+Alias CDMPTempC_3(3)=CDM1PTempC3_3
+Alias CDMPTempC_3(4)=CDM1PTempC4_3
+Alias CDMPTempC_4(1)=CDM1PTempC1_4
+Alias CDMPTempC_4(2)=CDM1PTempC2_4
+Alias CDMPTempC_4(3)=CDM1PTempC3_4
+Alias CDMPTempC_4(4)=CDM1PTempC4_4
+
+Units Measure_1_1=mV
+Units Measure_1_2=mV
+Units Measure_1_3=mV
+Units Measure_1_4=mV
+Units Measure_1_5=mV
+Units Measure_1_6=mV
+Units Measure_1_7=mV
+Units Measure_1_8=mV
+Units Measure_1_9=mV
+Units Measure_1_10=mV
+Units Measure_1_11=mV
+Units Measure_1_12=mV
+Units Measure_1_13=mV
+Units Measure_1_14=mV
+Units Measure_1_15=mV
+Units Measure_1_16=mV
+Units Measure_2_1=mV
+Units Measure_2_2=mV
+Units Measure_2_3=mV
+
+Units CDM1PTempC1=DegC
+Units CDM1PTempC2=DegC
+Units CDM1PTempC3=DegC
+Units CDM1PTempC4=DegC
+Units CDM1PTempC1_2=DegC
+Units CDM1PTempC2_2=DegC
+Units CDM1PTempC3_2=DegC
+Units CDM1PTempC4_2=DegC
+Units CDM1PTempC1_3=DegC
+Units CDM1PTempC2_3=DegC
+Units CDM1PTempC3_3=DegC
+Units CDM1PTempC4_3=DegC
+Units CDM1PTempC1_4=DegC
+Units CDM1PTempC2_4=DegC
+Units CDM1PTempC3_4=DegC
+Units CDM1PTempC4_4=DegC
+
+'''*****************************************************************
+'''Ops 1 Variables
+'''*****************************************************************
+'''Public OTT_Level_1        *Rimmed out because of "Alias" command
+'''Public Brine_1_Level_1
+'''Public Brine_2_Level_1
+'''Public Brine_3_Level_1
+'''Public Brine_4_Level_1
+'''Public Fresh_Level_1
+'''Public GasBuster_Level_1
+'''Public Press_Clean_Raw_1    *Rimmed for Alias
+'''Public Press_Dirty_Raw_1    *Rimmed for Alias
+'''Public Temp_Clean_Raw_1      *Rimmed for Alias
+'''Public Temp_Dirty_Raw_1      *Rimmed for Alias
+Public Temp_Clean_Raw_1_F
+Public Temp_Dirty_Raw_1_F
+Public Temp_Clean_1_F
+Public Temp_Dirty_1_F
+
+Public FlowMeter_Clean_1
+Public FlowMeter_Dirty_1
+
+'''****************************************************************
+'''Ops 1 Barrels Conversion Variables
+'''****************************************************************
+Public GasBuster_Level_1_bbls
+Public OTT_Level_1_bbls
+Public Brine_1_Level_1_bbls
+Public Brine_2_Level_1_bbls
+Public Brine_3_Level_1_bbls
+Public Brine_4_Level_1_bbls
+Public Fresh_Level_1_bbls
+
+Units GasBuster_Level_1_bbls = bbls
+Units OTT_Level_1_bbls = bbls
+Units Brine_1_Level_1_bbls = bbls
+Units Brine_2_Level_1_bbls = bbls
+Units Brine_3_Level_1_bbls = bbls
+Units Brine_4_Level_1_bbls = bbls
+Units Fresh_Level_1_bbls = bbls
+
+'''*****************************************************************
+'''Ops 2 Variables
+'''*****************************************************************
+'''Public OTT_Level_2
+'''Public Brine_1_Level_2
+'''Public Brine_2_Level_2
+'''Public Brine_3_Level_2
+'''Public Brine_4_Level_2
+'''Public Fresh_Level_2
+'''Public GasBuster_Level_2
+'''Public Press_Clean_Raw_2      *Rimmed for Alias
+'''Public Press_Dirty_Raw_2      *Rimmed for Alias
+'''Public Temp_Clean_Raw_2      'Rimmed for Alias
+'''Public Temp_Dirty_Raw_2      'Rimmed for Alias
+Public Temp_Clean_Raw_2_F
+Public Temp_Dirty_Raw_2_F
+Public Temp_Clean_2_F
+Public Temp_Dirty_2_F
+
+''Public FlowMeter_Clean_2
+''Public FlowMeter_Dirty_2
+
+'''****************************************************************
+'''Ops 2 Barrels Conversion Variables
+'''****************************************************************
+Public GasBuster_Level_2_bbls
+Public OTT_Level_2_bbls
+Public Brine_1_Level_2_bbls
+Public Brine_2_Level_2_bbls
+Public Brine_3_Level_2_bbls
+Public Brine_4_Level_2_bbls
+Public Fresh_Level_2_bbls
+
+Units GasBuster_Level_2_bbls = bbls
+Units OTT_Level_2_bbls = bbls
+Units Brine_1_Level_2_bbls = bbls
+Units Brine_2_Level_2_bbls = bbls
+Units Brine_3_Level_2_bbls = bbls
+Units Brine_4_Level_2_bbls = bbls
+Units Fresh_Level_2_bbls = bbls
+
+Public Press_Clean_1      
+Public Press_Dirty_1      
+Public Press_Clean_2
+Public Press_Dirty_2
+
+
+'********************************************************************
+Public Events_1
+Public Events_2
+
+
+'Public CalMode
+Public EventNotes_1 As String * 255
+Public UpdateNotes_1 As Boolean
+
+Public Plug_Clean_Total_1 As Long
+Public Plug_Dirty_Total_1 As Long
+Public Plug_Difference_1 As Long
+
+Public EventCounter_1
+Public EventCounter_2
+
+Public EventNotes_2 As String * 255
+Public UpdateNotes_2 As Boolean
+
+Public Plug_Clean_Total_2 As Long
+Public Plug_Dirty_Total_2 As Long
+Public Plug_Difference_2 As Long
+
+
+'Public OpenFile1 As Long, WriteString As String * 35
+'Public Flag(1)
+'Public CloseStat
+Public Save_Offsets As Boolean
+
+'========================================================================
+Public Press_Offset(4)
+Public Press_Offset_Switch(4) As Boolean
+Public Modbus_Serial(18) As Float
+
+Public Temp_1
+
+Public Record_OPS_1 As Boolean
+Public Record_OPS_2 As Boolean
+Public No_Recording As Boolean
+
+''Public Temperature(2) As Float
+''Public Pressure(2) As Float
+
+'========================================================================
+
+Public Interval_1 As Long
+Public Tech_Status_1 As Long
+Public Raw_Data_1 As Long
+Public Max_Raw_Data_1 As Long
+
+Public Interval_2 As Long
+Public Tech_Status_2 As Long
+Public Raw_Data_2 As Long
+Public Max_Raw_Data_2 As Long
+
+Public Interval_Result_2
+Public Tech_Status_Result_2
+Public Raw_Data_Result_2
+Public Max_Raw_Data_Result_2
+Public Flow_Result_2
+
+Public Interval_Result_3
+Public Tech_Status_Result_3
+Public Raw_Data_Result_3
+Public Max_Raw_Data_Result_3
+Public Flow_Result_3
+
+Public Temperature_Result
+Public Pressure_Result
+
+Units Interval_1  = seconds
+Units Interval_2  = seconds
+''Units Temperature = Deg C
+''Units Pressure = bars
+
+'========================================================================
+
+
+'''Public Gas_Sensor        *Rimmed out for Alias
+'''Public Gas_Sensor_2      *Rimmed out for Alias
+
+'Public Press_Clean_1_Mult
+'Public Press_Clean_1_OffSet
+'Public Press_Dirty_1_Mult
+'Public Press_Dirty_1_OffSet
+'Public Press_Clean_2_Mult
+'Public Press_Clean_2_OffSet
+'Public Press_Dirty_2_Mult
+'Public Press_Dirty_2_OffSet
+'Public Press_SetPoints (1,1)
+
+Public Temp_F_Offset(4)
+Public Temp_F_Measured(4)
+
+Public Temp_Offset_Switch(4)
+
+Public Upper_Level_Alarm_Limit(16) As Long
+Public Lower_Level_Alarm_Limit(16) As Long
+Public Alarm_On(16) As Boolean
+
+Public Client_Name As String * 50
+Public Pad_Name As String * 50
+Public Well_Name_1 As String * 50
+Public Well_Name_2 As String * 50
+Public Start_Date_1 As String * 20
+Public Start_Date_2 As String * 20
+
+'********************************************************************
+
+Public Dirty_2_Totalized As Float
+
+
+''Public Dynasonics_Clean_1 As Float
+''Public Dynasonics_Clean_2 As Float
+'''Public Clean_Rate_1      *Rimmed out for "Alias"
+'''Public Dirty_Rate_1      *Rimmed out for "Alias"
+'''Public Dirty_Rate_2      *Rimmed out for "Alias"
+
+'''Public Clean_Rate_2
+Public Clean_Total_1, Clean_Total_2 As Float
+Public Dirty_Total_2 As Float
+
+Public Clean_Pulse_1 As Float
+Public Dirty_Pulse_1 As Float
+Public Clean_Pulse_2 As Float
+Public Dirty_Pulse_2 As Float
+
+Alias Modbus_Serial(3) = Clean_Grand_Total_1
+
+Alias Modbus_Serial(5) = Dirty_Total_1
+Alias Modbus_Serial(6) = Dirty_Grand_Total_1
+ 
+'Alias Modbus_Serial(7) = Clean_Rate_2
+'Alias Modbus_Serial(8) = Clean_Total_2
+Alias Modbus_Serial(9) = Clean_Grand_Total_2
+
+'Units BattV=Volts
+Units PTemp_C=Deg C
+Units Fresh_Level_1=inches  '''All level units changed from 'bbls' to 'inches'
+Units Brine_1_Level_1=inches
+Units Brine_2_Level_1=inches
+Units Brine_3_Level_1=inches
+Units Brine_4_Level_1=inches
+Units OTT_Level_1=inches
+Units GasBuster_Level_1=inches
+Units Clean_Rate_1 = bpm
+Units Dirty_Rate_1 = bpm
+Units FlowMeter_Clean_1=gpm
+Units FlowMeter_Dirty_1=gpm
+Units Press_Clean_Raw_1=psi
+Units Press_Dirty_Raw_1=psi
+Units Temp_1=degF
+Units Temp_Clean_Raw_1_F = Farenheit
+Units Temp_Dirty_Raw_1_F = Farenheit
+Units Temp_Clean_2_F = Farenheit
+Units Temp_Dirty_2_F = Farenheit
+
+Units Gas_Sensor = %LEL
+Units GasSensor_1_2 = %LEL
+Units Gas_Sensor_2 = %LEL
+Units GasSensor_2_2 = %LEL
+
+'''*****************************************************************
+'''Ops 2 Units
+'''*****************************************************************
+Units Clean_Rate_2 = bpm
+Units Dirty_Rate_2 = bpm
+
+'========================================================================
+'Data Tables
+'========================================================================
+'Data Table - OPS 1
+'------------------------------------------------------------------------
+DataTable(OPS_1,True,-1)
+	DataInterval(0,1,Sec,0)  '''Changed interval from '4'
+  CardOut(0,-1)
+	Sample(1,OTT_Level_1,IEEE4)
+	Sample(1,Brine_1_Level_1,IEEE4)
+	Sample(1,Brine_2_Level_1,IEEE4)
+	Sample(1,Brine_3_Level_1,IEEE4)
+	Sample(1,Brine_4_Level_1,IEEE4)
+	Sample(1,Fresh_Level_1,IEEE4)
+	Sample(1,GasBuster_Level_1,IEEE4)
+  Sample(1,Gas_Sensor,IEEE4)
+  Sample(1,GasSensor_1_2,IEEE4)
+	Sample(1,Press_Clean_1,IEEE4)
+	Sample(1,Press_Dirty_1,IEEE4)
+	Sample (1,Temp_Clean_1_F, IEEE4)
+	Sample (1,Temp_Dirty_1_F, IEEE4)
+	Sample (1,Clean_Rate_1, IEEE4)
+	Sample (1,Clean_Total_1, IEEE4)
+	Sample (1,Dirty_Rate_1, IEEE4)
+	Sample (1,Dirty_Total_1, IEEE4)
+	Sample (1,Tech_Status_1, IEEE4)
+	Sample (1,Methane,IEEE4)
+	Sample (1,Ethane,IEEE4)
+  Sample (1,Propane,IEEE4)
+  Sample (1,IsoButane,IEEE4)
+  Sample (1,nButane,IEEE4)
+  Sample (1,IsoPentane,IEEE4)
+  Sample (1,PercentBalance,IEEE4)
+  Sample (1,GasCellPressure,IEEE4)
+  Sample (1,GasCellTemperature,IEEE4)
+  Sample (1,CV,IEEE4)
+  Sample (1,WI,IEEE4)
+EndTable
+
+'------------------------------------------------------------------------
+'Data Table - OPS 2
+'------------------------------------------------------------------------
+DataTable(OPS_2,True,-1)
+  CardOut(0,-1)
+	DataInterval(0,1,Sec,0)  '''Changed interval from '4'
+	Sample(1,OTT_Level_2,IEEE4)
+	Sample(1,Brine_1_Level_2,IEEE4)
+	Sample(1,Brine_2_Level_2,IEEE4)
+	Sample(1,Brine_3_Level_2,IEEE4)
+	Sample(1,Brine_4_Level_2,IEEE4)
+	Sample(1,Fresh_Level_1,IEEE4)
+	Sample(1,GasBuster_Level_2,IEEE4)
+  Sample(1,Gas_Sensor_2,IEEE4)
+  Sample(1,GasSensor_2_2,IEEE4)
+	Sample(1,Press_Clean_2,IEEE4)
+	Sample(1,Press_Dirty_2,IEEE4)
+	Sample (1,Temp_Clean_2_F, IEEE4)
+	Sample (1,Temp_Dirty_2_F, IEEE4)
+	Sample (1,Clean_Rate_2, IEEE4)
+	Sample (1,Clean_Total_2, IEEE4)
+	Sample (1,Dirty_Rate_2, IEEE4)
+	Sample (1,Dirty_Total_2, IEEE4)
+	Sample (1,Tech_Status_2, IEEE4)
+EndTable
+
+'------------------------------------------------------------------------
+'EventTable OPS 1
+'------------------------------------------------------------------------
+DataTable(EventTable_1,UpdateNotes_1,500)
+  CardOut(0,-1)
+  Sample(1,EventCounter_1, IEEE4)
+  Sample(1,EventNotes_1, String)
+  Sample(1,Press_Clean_1, IEEE4)
+  Sample(1,Press_Dirty_1, IEEE4)
+  Sample(1,Clean_Rate_1, IEEE4)
+  Sample(1,Dirty_Rate_1, IEEE4)
+  Sample(1,Clean_Total_1,IEEE4)
+  Sample(1,Dirty_Total_1,IEEE4)
+  Sample(1,Plug_Clean_Total_1,IEEE4)
+  Sample(1,Plug_Dirty_Total_1,IEEE4)
+  Sample(1,Plug_Difference_1,IEEE4)
+  
+  UpdateNotes_1 = 0
+  EventCounter_1 = EventCounter_1 + 1
+  Events_1 = -1
+EndTable
+
+'------------------------------------------------------------------------
+'EventTable OPS 2
+'------------------------------------------------------------------------
+DataTable(EventTable_2,UpdateNotes_2,500)
+  CardOut(0,-1)
+  Sample(1,EventCounter_2, IEEE4)
+  Sample(1,EventNotes_2, String)
+  Sample(1,Press_Clean_2, IEEE4)
+  Sample(1,Press_Dirty_2, IEEE4)
+  Sample(1,Clean_Rate_2, IEEE4)
+  Sample(1,Dirty_Rate_2, IEEE4)
+  Sample(1,Clean_Total_2,IEEE4)
+  Sample (1,Dirty_Total_2,IEEE4)
+  Sample(1,Plug_Clean_Total_2,IEEE4)
+  Sample(1,Plug_Dirty_Total_2,IEEE4)
+  Sample(1,Plug_Difference_2,IEEE4)
+  
+  UpdateNotes_2 = 0
+  EventCounter_2 = EventCounter_2 + 1
+  Events_2 = -1
+EndTable
+
+'------------------------------------------------------------------------
+'Adjustments OPS 1 & OPS 2
+'------------------------------------------------------------------------
+DataTable(Adjustments,Save_Offsets,100)
+  CardOut(0,-1)
+  Sample(1,EventCounter_1, Long)
+  Sample(1,EventCounter_2, Long)
+  Sample(1,Client_Name, String)
+  Sample(1,Pad_Name, String)
+  Sample(1,Well_Name_1, String)
+  Sample(1,Well_Name_2, String)
+  Sample(1,Start_Date_1, String)
+  Sample(1,Start_Date_2, String)
+  Sample(1,Press_Offset(1),Long)
+  Sample(1,Press_Offset(2),Long)
+  Sample(1,Press_Offset(3),Long)
+  Sample(1,Press_Offset(4),Long)
+  Sample(1,Temp_F_Measured(1),Long)
+  Sample(1,Temp_F_Measured(2),Long)
+  Sample(1,Temp_F_Measured(3),Long)
+  Sample(1,Temp_F_Measured(4),Long)
+  Sample(1,Upper_Level_Alarm_Limit(1),Long)
+  Sample(1,Lower_Level_Alarm_Limit(1),Long)
+  Sample(1,Upper_Level_Alarm_Limit(2),Long)
+  Sample(1,Lower_Level_Alarm_Limit(2),Long)
+  Sample(1,Upper_Level_Alarm_Limit(3),Long)
+  Sample(1,Lower_Level_Alarm_Limit(3),Long)
+  Sample(1,Upper_Level_Alarm_Limit(4),Long)
+  Sample(1,Lower_Level_Alarm_Limit(4),Long)
+  Sample(1,Upper_Level_Alarm_Limit(5),Long)
+  Sample(1,Lower_Level_Alarm_Limit(5),Long)
+  Sample(1,Upper_Level_Alarm_Limit(6),Long)
+  Sample(1,Lower_Level_Alarm_Limit(6),Long)
+  Sample(1,Upper_Level_Alarm_Limit(7),Long)
+  Sample(1,Lower_Level_Alarm_Limit(7),Long)
+  Sample(1,Upper_Level_Alarm_Limit(8),Long)
+  Sample(1,Lower_Level_Alarm_Limit(8),Long)
+  Sample(1,Upper_Level_Alarm_Limit(9),Long)
+  Sample(1,Lower_Level_Alarm_Limit(9),Long)
+  Sample(1,Upper_Level_Alarm_Limit(10),Long)
+  Sample(1,Lower_Level_Alarm_Limit(10),Long)
+  Sample(1,Upper_Level_Alarm_Limit(11),Long)
+  Sample(1,Lower_Level_Alarm_Limit(11),Long)
+  Sample(1,Upper_Level_Alarm_Limit(12),Long)
+  Sample(1,Lower_Level_Alarm_Limit(12),Long)
+  Sample(1,Upper_Level_Alarm_Limit(13),Long)
+  Sample(1,Lower_Level_Alarm_Limit(13),Long)
+  Sample(1,Upper_Level_Alarm_Limit(14),Long)
+  Sample(1,Lower_Level_Alarm_Limit(14),Long)
+  Sample(1,Upper_Level_Alarm_Limit(15),Long)
+  Sample(1,Lower_Level_Alarm_Limit(15),Long)
+  Sample(1,Upper_Level_Alarm_Limit(16),Long)
+  Sample(1,Lower_Level_Alarm_Limit(16),Long)
+  Save_Offsets = 0
+EndTable
+
+'------------------------------------------------------------------------
+'Managed Pressure Drilling Tables
+'------------------------------------------------------------------------
+DataTable (OPS1_MPD,True,-1)
+  DataInterval(0,5,Sec,0)
+  CardOut (0 ,-1 )
+  Sample (1,Press_Dirty_1,IEEE4)
+  Sample (1,Clean_Rate_1,IEEE4)
+  Sample (1,Dirty_Rate_1,IEEE4)
+  Sample (1,Clean_Total_1,IEEE4)
+  Sample (1,Dirty_Total_1,IEEE4)
+EndTable
+
+DataTable (OPS2_MPD,True,-1)
+  DataInterval(0,5,Sec,0)
+  CardOut (0 ,-1 )
+  Sample (1,Press_Dirty_2,IEEE4)
+  Sample (1,Clean_Rate_2,IEEE4)
+  Sample (1,Dirty_Rate_2,IEEE4)
+  Sample (1,Clean_Total_2,IEEE4)
+  Sample (1,Dirty_Total_2,IEEE4)
+EndTable
+
+'------------------------------------------------------------------------
+'MiniHydra Data Table
+'------------------------------------------------------------------------
+DataTable (MiniHydraOps1,True,-1)
+  DataInterval (0,1,Sec,0)
+  Sample (1,Scale,IEEE4)
+  Sample (1,Bio,IEEE4)
+  Sample (1,Gel,IEEE4)
+  Sample (1,FR,IEEE4)
+  Sample (1,PoP,IEEE4)
+  Sample (1,ScaleTotal,IEEE4)
+  Sample (1,BioTotal,IEEE4)
+  Sample (1,GelTotal,IEEE4)
+  Sample (1,FRTotal,IEEE4)
+  Sample (1,PoPTotal,IEEE4)
+EndTable
+  
+'------------------------------------------------------------------------
+'Emissions table
+'------------------------------------------------------------------------
+DataTable (Emissions,1,-1)
+ 	DataInterval (0,1,Sec,0)
+	Sample (1,Methane,IEEE4)
+	Sample (1,Ethane,IEEE4)
+  Sample (1,Propane,IEEE4)
+  Sample (1,IsoButane,IEEE4)
+  Sample (1,nButane,IEEE4)
+  Sample (1,IsoPentane,IEEE4)
+  Sample (1,PercentBalance,IEEE4)
+  Sample (1,GasCellPressure,IEEE4)
+  Sample (1,GasCellTemperature,IEEE4)
+  Sample (1,CV,IEEE4)
+  Sample (1,WI,IEEE4)
+EndTable
+
+'DataTable (Emissions,True,-1 )
+  'CardOut (0,-1)
+  'Sample (1,MassFlow,IEEE4)
+  'Sample (1,MassFlowTotal,IEEE4)
+'EndTable
+'========================================================================
+
+'========================================================================
+'Main Program
+'========================================================================
+
+BeginProg
+  PipeLineMode
+
+  EventCounter_1 = Adjustments.EventCounter_1(1,1)
+  EventCounter_2 = Adjustments.EventCounter_2(1,1)
+   Client_Name = "Antero Resources"
+  Pad_Name = "Leonard" 
+  Well_Name_1 = "Rikk 1H"
+  Well_Name_2 = ""
+  Start_Date_1 = "5/18/17"
+  Start_Date_2 = ""
+  Press_Offset(1) = -58.6
+  Press_Offset(2) = 11.4
+  Press_Offset(3) = 0
+  Press_Offset(4) = -295.0
+  Temp_F_Measured(1) = 70
+  Temp_F_Measured(2) = 70 
+  Temp_F_Measured(3) = 70
+  Temp_F_Measured(4) = 70
+
+  Upper_Level_Alarm_Limit(1) = 490
+  Lower_Level_Alarm_Limit(1) = 10
+  Upper_Level_Alarm_Limit(2) = 490
+  Lower_Level_Alarm_Limit(2) = 10
+  Upper_Level_Alarm_Limit(3) = 490
+  Lower_Level_Alarm_Limit(3) = 10
+  Upper_Level_Alarm_Limit(4) = 490
+  Lower_Level_Alarm_Limit(4) = 10
+  Upper_Level_Alarm_Limit(5) = 490
+  Lower_Level_Alarm_Limit(5) = 10
+  Upper_Level_Alarm_Limit(6) = 490
+  Lower_Level_Alarm_Limit(6) = 10
+  Upper_Level_Alarm_Limit(7) = 490
+  Lower_Level_Alarm_Limit(7) = 10
+  Upper_Level_Alarm_Limit(8) = 490
+  Lower_Level_Alarm_Limit(8) = 10
+  Upper_Level_Alarm_Limit(9) = 490
+  Lower_Level_Alarm_Limit(9) = 10
+  Upper_Level_Alarm_Limit(10) = 490
+  Lower_Level_Alarm_Limit(10) = 10
+  Upper_Level_Alarm_Limit(11) = 490
+  Lower_Level_Alarm_Limit(11) = 10
+  Upper_Level_Alarm_Limit(12) = 490
+  Lower_Level_Alarm_Limit(12) = 10
+  Upper_Level_Alarm_Limit(13) = 490
+  Lower_Level_Alarm_Limit(13) = 10
+  Upper_Level_Alarm_Limit(14) = 490
+  Lower_Level_Alarm_Limit(14) = 10
+  Upper_Level_Alarm_Limit(15) = 490
+  Lower_Level_Alarm_Limit(15) = 10
+  Upper_Level_Alarm_Limit(16) = 490
+  Lower_Level_Alarm_Limit(16) = 10
+
+'========================================================================
+'Default Tank Cal Measurements
+'------------------------------------------------------------------------  
+  LowLevelLimit(1) = 106.5
+  LowLevelLimit(2) = 104
+  LowLevelLimit(3) = 114.8
+  LowLevelLimit(4) = 116
+  LowLevelLimit(5) = 115.5
+  LowLevelLimit(6) = 117
+  LowLevelLimit(7) = 105
+  LowLevelLimit(8) = 108.5
+  LowLevelLimit(9) = 106
+  LowLevelLimit(10) = 124
+  LowLevelLimit(11) = 111
+  LowLevelLimit(12) = 121
+  LowLevelLimit(13) = 117
+  LowLevelLimit(14) = 127.5
+'========================================================================
+
+  Record_OPS_1 = -1
+  Record_OPS_2 = -1    
+  EventCounter_1 = 0
+  EventCounter_2 = 0
+
+'========================================================================
+'XBee
+'------------------------------------------------------------------------
+'  SerialOpen (COMU9,9600,19,0,200)
+'  XBeeHex = Hex(XBee)
+
+'========================================================================
+
+	'Main Scan
+	Scan(500,mSec,10,0)
+'	Scan(4,Sec,1,0)
+    If Record_OPS_1 > -0.5 AND Record_OPS_2 > -0.5
+      No_Recording = -1
+    Else
+      No_Recording = 0
+    EndIf      
+
+'========================================================================
+'Research and Development
+'Hello World!
+'========================================================================
+'Flow Totalizers
+'------------------------------------------------------------------------
+'Totalize (1,Clean_Rate_1,IEEE4,False)
+'TotalRun (Clean_Rate_1_Total,1,Clean_Rate_1,99999,False)
+'TotalRun (Dirty_Rate_1_Total,1,Clean_Rate_1,99999,False)
+'
+'------------------------------------------------------------------------
+'AutoStrap(R)(TM)
+'------------------------------------------------------------------------
+If AutoStrapButton = -1
+  Timer (1,Sec,0)
+  If AutoStrapTimer > 0 AND AutoStrapTimer < 5
+  AutoStrapAlpha = GasBuster_Level_1
+  EndIf
+  If AutoStrapTimer > 299 AND AutoStrapTimer < 304
+  AutoStrapOmega = GasBuster_Level_1
+  EndIf
+EndIf
+
+AutoStrapTimer = Timer (1,Sec,4)
+AutoStrap = (0.0022*((AutoStrapOmega - AutoStrapAlpha)^2) + 4.1883* (AutoStrapOmega - AutoStrapAlpha) - 8.1856)/5
+
+  If AutoStrapTimer > 300
+  AutoStrapButton = 0
+  EndIf
+  
+  If AutoStrapButton = 0
+  Timer (1,Sec,3)
+  EndIf
+  
+'------------------------------------------------------------------------
+If AutoStrapButtonOTT = -1
+  Timer (2,Sec,0)
+  If AutoStrapTimerOTT > 0 AND AutoStrapTimerOTT < 5
+  AutoStrapAlphaOTT = OTT_Level_1
+  EndIf
+  If AutoStrapTimerOTT > 299 AND AutoStrapTimerOTT < 304
+  AutoStrapOmegaOTT = OTT_Level_1
+  EndIf
+EndIf
+
+AutoStrapTimerOTT = Timer (2,Sec,4)
+AutoStrapOTT = (0.0022*((AutoStrapOmegaOTT - AutoStrapAlphaOTT)^2) + 4.1883* (AutoStrapOmegaOTT - AutoStrapAlphaOTT) - 8.1856)/5
+
+  If AutoStrapTimerOTT > 300
+  AutoStrapButtonOTT = 0
+  EndIf
+  
+  If AutoStrapButtonOTT = 0
+  Timer (2,Sec,3)
+  EndIf
+
+'------------------------------------------------------------------------
+'Automatic Plug Counter, Ops 1
+'------------------------------------------------------------------------
+PlugCount(1) = 0  
+
+If Press_Clean_1 >= 2000
+  Timer (PlugTimer(1),Sec,0)
+EndIf
+
+  If Press_Clean_1 < 200
+  Timer (PlugTimer(1),Sec,3)
+EndIf
+
+  If Press_Clean_1 >= 2000 AND Timer (PlugTimer(1),Sec,4) > 600
+  PlugCount(1) = PlugCount(1) + 1
+EndIf
+
+'------------------------------------------------------------------------
+'Automatic Joint Counter, Ops 1
+'------------------------------------------------------------------------
+JointCount(1) = 0
+
+If Press_Clean_1 >= 2000
+  Timer (JointTimer(1),Sec,0)
+EndIf
+
+  If Press_Clean_1 < 100
+  Timer (JointTimer(1), Sec,3)
+EndIf
+
+  If Press_Clean_1 >= 2000 AND Timer (JointTimer(1),Sec,4) > 3 AND Timer (JointTimer(1),Sec,4) < 300
+  JointCount(1) = JointCount(1) + 1
+EndIf
+  
+'------------------------------------------------------------------------
+'Tank Level Calibration Programming
+'------------------------------------------------------------------------
+TankMult(1) = (LowLevelLimit(1) - 10)/1600
+TankOffs(1) = TankMult(1) * -400
+TankMult(2) = (LowLevelLimit(2) - 10)/1600
+TankOffs(2) = TankMult(2) * -400
+TankMult(3) = (LowLevelLimit(3) - 10)/1600
+TankOffs(3) = TankMult(3) * -400
+TankMult(4) = (LowLevelLimit(4) - 10)/1600
+TankOffs(4) = TankMult(4) * -400
+TankMult(5) = (LowLevelLimit(5) - 10)/1600
+TankOffs(5) = TankMult(5) * -400
+TankMult(6) = (LowLevelLimit(6) - 10)/1600
+TankOffs(6) = TankMult(6) * -400
+TankMult(7) = (LowLevelLimit(7) - 10)/1600
+TankOffs(7) = TankMult(7) * -400
+TankMult(8) = (LowLevelLimit(8) - 10)/1600
+TankOffs(8) = TankMult(8) * -400
+TankMult(9) = (LowLevelLimit(9) - 10)/1600
+TankOffs(9) = TankMult(9) * -400
+TankMult(10) = (LowLevelLimit(10) - 10)/1600
+TankOffs(10) = TankMult(10) * -400
+TankMult(11) = (LowLevelLimit(11) - 10)/1600
+TankOffs(11) = TankMult(11) * -400
+TankMult(12) = (LowLevelLimit(12) - 10)/1600
+TankOffs(12) = TankMult(12) * -400
+TankMult(13) = (LowLevelLimit(13) - 10)/1600
+TankOffs(13) = TankMult(13) * -400
+TankMult(14) = (LowLevelLimit(14) - 10)/1600
+TankOffs(14) = TankMult(14) * -400
+
+'------------------------------------------------------------------------
+'Ops 1 Tank Select Menu
+'------------------------------------------------------------------------
+Select Case GasBusterTankMenu(1)
+  Case 0  'Baker 102" Wide V-Bottom
+    GasBuster_Level_1_bbls = 4.4754*(GasBuster_Level_1) - 14.895
+  Case 1  'Dragon Modern 500
+    GasBuster_Level_1_bbls = 4.854*(GasBuster_Level_1) - 9.248
+  Case 2  'Baker Modern Smooth Wall
+    GasBuster_Level_1_bbls = 4.476*(GasBuster_Level_1) - 16.132
+  Case 3  'Sand-X
+    GasBuster_Level_1_bbls = 4.492*(GasBuster_Level_1) - 1.835
+  Case 4  'Baker 96" V-Bottome
+    GasBuster_Level_1_bbls = 0.0022*(GasBuster_Level_1^2) + (4.1883 * GasBuster_Level_1) - 8.1856
+EndSelect  
+  
+Select Case OTTTankMenu(1)
+  Case 0  'Baker 102" Wide V-Bottom
+    OTT_Level_1_bbls = 4.4754*(OTT_Level_1) - 14.895
+  Case 1  'Dragon Modern 500
+    OTT_Level_1_bbls = 4.854*(OTT_Level_1) - 9.248
+  Case 2  'Baker Modern Smooth Wall
+    OTT_Level_1_bbls = 4.476*(OTT_Level_1) - 16.132
+  Case 3  'Sand-X
+    OTT_Level_1_bbls = 4.492*(OTT_Level_1) - 1.835
+  Case 4  'Baker 96" V-Bottome
+    OTT_Level_1_bbls = 0.0022*(OTT_Level_1^2) + (4.1883 * OTT_Level_1) - 8.1856
+EndSelect
+    
+Select Case Brine1TankMenu(1)
+  Case 0  'Baker 102" Wide V-Bottom
+    Brine_1_Level_1_bbls = 4.4754*(Brine_1_Level_1) - 14.895
+  Case 1  'Dragon Modern 500
+    Brine_1_Level_1_bbls = 4.854*(Brine_1_Level_1) - 9.248
+  Case 2  'Baker Modern Smooth Wall
+    Brine_1_Level_1_bbls = 4.476*(Brine_1_Level_1) - 16.132
+  Case 3  'Sand-X
+    Brine_1_Level_1_bbls = 4.492*(Brine_1_Level_1) - 1.835
+  Case 4  'Baker 96" V-Bottome
+    Brine_1_Level_1_bbls = 0.0022*(Brine_1_Level_1^2) + (4.1883 * Brine_1_Level_1) - 8.1856
+EndSelect
+    
+Select Case Brine2TankMenu(1)
+  Case 0  'Baker 102" Wide V-Bottom
+    Brine_2_Level_1_bbls = 4.4754*(Brine_2_Level_1) - 14.895
+  Case 1  'Dragon Modern 500
+    Brine_2_Level_1_bbls = 4.854*(Brine_2_Level_1) - 9.248
+  Case 2  'Baker Modern Smooth Wall
+    Brine_2_Level_1_bbls = 4.476*(Brine_2_Level_1) - 16.132
+  Case 3  'Sand-X
+    Brine_2_Level_1_bbls = 4.492*(Brine_2_Level_1) - 1.835
+  Case 4  'Baker 96" V-Bottome
+    Brine_2_Level_1_bbls = 0.0022*(Brine_2_Level_1^2) + (4.1883 * Brine_2_Level_1) - 8.1856
+EndSelect
+    
+Select Case Brine3TankMenu(1)
+  Case 0  'Baker 102" Wide V-Bottom
+    Brine_3_Level_1_bbls = 4.4754*(Brine_3_Level_1) - 14.895
+  Case 1  'Dragon Modern 500
+    Brine_3_Level_1_bbls = 4.854*(Brine_3_Level_1) - 9.248
+  Case 2  'Baker Modern Smooth Wall
+    Brine_3_Level_1_bbls = 4.476*(Brine_3_Level_1) - 16.132
+  Case 3  'Sand-X
+    Brine_3_Level_1_bbls = 4.492*(Brine_3_Level_1) - 1.835
+  Case 4  'Baker 96" V-Bottome
+    Brine_3_Level_1_bbls = 0.0022*(Brine_3_Level_1^2) + (4.1883 * Brine_3_Level_1) - 8.1856
+EndSelect
+    
+Select Case Brine4TankMenu(1)
+  Case 0  'Baker 102" Wide V-Bottom
+    Brine_4_Level_1_bbls = 4.4754*(Brine_4_Level_1) - 14.895
+  Case 1  'Dragon Modern 500
+    Brine_4_Level_1_bbls = 4.854*(Brine_4_Level_1) - 9.248
+  Case 2  'Baker Modern Smooth Wall
+    Brine_4_Level_1_bbls = 4.476*(Brine_4_Level_1) - 16.132
+  Case 3  'Sand-X
+    Brine_4_Level_1_bbls = 4.492*(Brine_4_Level_1) - 1.835
+  Case 4  'Baker 96" V-Bottome
+    Brine_4_Level_1_bbls = 0.0022*(Brine_4_Level_1^2) + (4.1883 * Brine_4_Level_1) - 8.1856
+EndSelect
+    
+Select Case FreshTankMenu(1)
+  Case 0  'Baker 102" Wide V-Bottom
+    Fresh_Level_1_bbls = 4.4754*(Fresh_Level_1) - 14.895
+  Case 1  'Dragon Modern 500
+    Fresh_Level_1_bbls = 4.854*(Fresh_Level_1) - 9.248
+  Case 2  'Baker Modern Smooth Wall
+    Fresh_Level_1_bbls = 4.476*(Fresh_Level_1) - 16.132
+  Case 3  'Sand-X
+    Fresh_Level_1_bbls = 4.492*(Fresh_Level_1) - 1.835
+  Case 4  'Baker 96" V-Bottome
+    Fresh_Level_1_bbls = 0.0022*(Fresh_Level_1^2) + (4.1883 * Fresh_Level_1) - 8.1856
+EndSelect    
+'------------------------------------------------------------------------
+'Ops 2 Tank Select Menu
+'------------------------------------------------------------------------
+Select Case GasBusterTankMenu(2)
+  Case 0  'Baker 102" Wide V-Bottom
+    GasBuster_Level_2_bbls = 4.4754*(GasBuster_Level_2) - 14.895
+  Case 1  'Dragon Modern 500
+    GasBuster_Level_2_bbls = 4.854*(GasBuster_Level_2) - 9.248
+  Case 2  'Baker Modern Smooth Wall
+    GasBuster_Level_2_bbls = 4.476*(GasBuster_Level_2) - 16.132
+  Case 3  'Sand-X
+    GasBuster_Level_2_bbls = 4.492*(GasBuster_Level_2) - 1.835
+  Case 4  'Baker 96" V-Bottome
+    GasBuster_Level_2_bbls = 0.0022*(GasBuster_Level_2^2) + (4.1883 * GasBuster_Level_2) - 8.1856
+EndSelect
+    
+Select Case OTTTankMenu(2)
+  Case 0  'Baker 102" Wide V-Bottom
+    OTT_Level_2_bbls = 4.4754*(OTT_Level_2) - 14.895
+  Case 1  'Dragon Modern 500
+    OTT_Level_2_bbls = 4.854*(OTT_Level_2) - 9.248
+  Case 2  'Baker Modern Smooth Wall
+    OTT_Level_2_bbls = 4.476*(OTT_Level_2) - 16.132
+  Case 3  'Sand-X
+    OTT_Level_2_bbls = 4.492*(OTT_Level_2) - 1.835
+  Case 4  'Baker 96" V-Bottome
+    OTT_Level_2_bbls = 0.0022*(OTT_Level_2^2) + (4.1883 * OTT_Level_2) - 8.1856
+EndSelect
+    
+Select Case Brine1TankMenu(2)
+  Case 0  'Baker 102" Wide V-Bottom
+    Brine_1_Level_2_bbls = 4.4754*(Brine_1_Level_2) - 14.895
+  Case 1  'Dragon Modern 500
+    Brine_1_Level_2_bbls = 4.854*(Brine_1_Level_2) - 9.248
+  Case 2  'Baker Modern Smooth Wall
+    Brine_1_Level_2_bbls = 4.476*(Brine_1_Level_2) - 16.132
+  Case 3  'Sand-X
+    Brine_1_Level_2_bbls = 4.492*(Brine_1_Level_2) - 1.835
+  Case 4  'Baker 96" V-Bottome
+    Brine_1_Level_2_bbls = 0.0022*(Brine_1_Level_2^2) + (4.1883 * Brine_1_Level_2) - 8.1856
+EndSelect
+    
+Select Case Brine2TankMenu(2)
+  Case 0  'Baker 102" Wide V-Bottom
+    Brine_2_Level_2_bbls = 4.4754*(Brine_2_Level_2) - 14.895
+  Case 1  'Dragon Modern 500
+    Brine_2_Level_2_bbls = 4.854*(Brine_2_Level_2) - 9.248
+  Case 2  'Baker Modern Smooth Wall
+    Brine_2_Level_2_bbls = 4.476*(Brine_2_Level_2) - 16.132
+  Case 3  'Sand-X
+    Brine_2_Level_2_bbls = 4.492*(Brine_2_Level_2) - 1.835
+  Case 4  'Baker 96" V-Bottome
+   Brine_2_Level_2_bbls = 0.0022*(Brine_2_Level_2^2) + (4.1883 * Brine_2_Level_2) - 8.1856
+EndSelect
+    
+Select Case Brine3TankMenu(2)
+  Case 0  'Baker 102" Wide V-Bottom
+    Brine_3_Level_2_bbls = 4.4754*(Brine_3_Level_2) - 14.895
+  Case 1  'Dragon Modern 500
+    Brine_3_Level_2_bbls = 4.854*(Brine_3_Level_2) - 9.248
+  Case 2  'Baker Modern Smooth Wall
+    Brine_3_Level_2_bbls = 4.476*(Brine_3_Level_2) - 16.132
+  Case 3  'Sand-X
+    Brine_3_Level_2_bbls = 4.492*(Brine_3_Level_2) - 1.835
+  Case 4  'Baker 96" V-Bottome
+    Brine_3_Level_2_bbls = 0.0022*(Brine_3_Level_2^2) + (4.1883 * Brine_3_Level_2) - 8.1856
+EndSelect
+    
+Select Case Brine4TankMenu(2)
+  Case 0  'Baker 102" Wide V-Bottom
+    Brine_4_Level_2_bbls = 4.4754*(Brine_4_Level_2) - 14.895
+  Case 1  'Dragon Modern 500
+    Brine_4_Level_2_bbls = 4.854*(Brine_4_Level_2) - 9.248
+  Case 2  'Baker Modern Smooth Wall
+    Brine_4_Level_2_bbls = 4.476*(Brine_4_Level_2) - 16.132
+  Case 3  'Sand-X
+    Brine_4_Level_2_bbls = 4.492*(Brine_4_Level_2) - 1.835
+  Case 4  'Baker 96" V-Bottome
+    Brine_4_Level_2_bbls = 0.0022*(Brine_4_Level_2^2) + (4.1883 * Brine_4_Level_2) - 8.1856
+EndSelect
+    
+Select Case FreshTankMenu(2)
+  Case 0  'Baker 102" Wide V-Bottom
+    Fresh_Level_2_bbls = 4.4754*(Fresh_Level_2) - 14.895
+  Case 1  'Dragon Modern 500
+    Fresh_Level_2_bbls = 4.854*(Fresh_Level_2) - 9.248
+  Case 2  'Baker Modern Smooth Wall
+    Fresh_Level_2_bbls = 4.476*(Fresh_Level_2) - 16.132
+  Case 3  'Sand-X
+    Fresh_Level_2_bbls = 4.492*(Fresh_Level_2) - 1.835
+  Case 4  'Baker 96" V-Bottome
+    Fresh_Level_2_bbls = 0.0022*(Fresh_Level_2^2) + (4.1883 * Fresh_Level_2) - 8.1856
+EndSelect
+
+'--------------------------------------------------------------------------------------
+'XBee
+'--------------------------------------------------------------------------------------
+'XBee = HexToDec(String)
+'SerialIn (XBee,COMU9,1,-1,28)
+'SerialOut (COMU9,XBee,XBeeWait,0,0)
+'SerialInRecord (COMU9,XBeeR,126,0,0,NBytesReturned,00)
+'SerialInBlock (COMU9,XBeeB,100)
+
+'XBeeHex = Hex(XBee)
+'XBeeB = Hex(XBeeB)
+'XBeeASCII = ASCII(XBee)
+
+'StartDelimeter = ASCII(XBee(1,1,1))
+'Length(1) = ASCII(XBee(1,1,2))
+'Length(2) = ASCII(XBee(1,1,3))
+'FrameType = ASCII(XBee(1,1,4))
+'SixteenBitAddress(1) = ASCII(XBee(1,1,5))
+'SixteenBitAddress(2) = ASCII(XBee(1,1,6))
+'RSSI = ASCII(XBee(1,1,7))
+'Options = ASCII(XBee(1,1,8))
+'NumberOfSamples = ASCII(XBee(1,1,9))
+'AnalogChannelMask(1) = ASCII(XBee(1,1,10))
+'AnalogChannelMask(2) = ASCII(XBee(1,1,11))
+'AnalogValue(1) = ASCII(XBee(1,1,12))
+'AnalogValue(2) = ASCII(XBee(1,1,13))
+'Check = ASCII(XBee(1,1,14))
+'========================================================================
+'Thank you for your cooperation. The cake is not a lie
+'========================================================================
+
+PulseCount (Clean_Pulse_1,1,U1,2,0,0.0238095238095238,0)
+PulseCount (Dirty_Pulse_1,1,U2,2,0,0.0238095238095238,0)
+PulseCount (Clean_Pulse_2,1,U3,2,0,0.0238095238095238,0)
+PulseCount (Dirty_Pulse_2,1,U4,2,0,0.0238095238095238,0)
+
+'=================================================================================================================================================
+'OPS 1 Measurements, CDM 1
+'-------------------------------------------------------------------------------------------------------------------------------------------------
+		Battery(BattV)'Default CR6 Datalogger Battery Voltage measurement 'BattV'
+		PanelTemp(PTemp_C,60)'Default CR6 Datalogger Wiring Panel Temperature measurement 'PTemp_C'
+		CDM_Battery(CDM_A116,1,CDMBattV_1)'Default Battery Voltage measurement 'CDM1BattV' on CDM-A116 with CPI address 1
+		CDM_PanelTemp(CDM_A116,1,CDMPTempC_1(),4,1,60)'Default Wiring Panel Temperature measurements 'CDMPTempC()' on CDM-A116 with CPI address 1
+    CDM_VoltDiff(CDM_A116,1,Measure_1_1,1,mV5000,1,False,0,60,TankMult(1),TankOffs(1)) '(Gas Buster)
+		CDM_VoltDiff(CDM_A116,1,Measure_1_2,1,mV5000,2,False,0,60,TankMult(2),TankOffs(2)) '(OTT)
+		CDM_VoltDiff(CDM_A116,1,Measure_1_3,1,mV5000,3,False,0,60,TankMult(3),TankOffs(3)) '(Brine 1)
+		CDM_VoltDiff(CDM_A116,1,Measure_1_4,1,mV5000,4,False,0,60,TankMult(4),TankOffs(4)) '(Brine 2)
+		CDM_VoltDiff(CDM_A116,1,Measure_1_5,1,mV5000,5,False,0,60,TankMult(5),TankOffs(5)) '(Brine 3)
+		CDM_VoltDiff(CDM_A116,1,Measure_1_6,1,mV5000,6,False,0,60,TankMult(6),TankOffs(6)) '(Brine 4). Currently Mass Flow Meter
+		CDM_VoltDiff(CDM_A116,1,Measure_1_7,1,mV5000,7,False,0,60,TankMult(7),TankOffs(7)) '(Fresh Water)
+		CDM_VoltDiff(CDM_A116,1,MassFlow,1,mV5000,8,False,0,60,0.2125,-85) '(MassFlow)
+		CDM_VoltDiff(CDM_A116,1,Measure_1_9,1,mV5000,9,False,0,60,9.375,-3750) '(Clean Pressure)
+		CDM_VoltDiff(CDM_A116,1,Measure_1_10,1,mV5000,10,False,0,60,9.375,-3750) '(Dirty Pressure)
+		CDM_VoltDiff(CDM_A116,1,Measure_1_11,1,mV5000,11,False,0,60,0.015625,-6.25) '(Clean Flow), Changed from Mult(0.005), Offset(-0.04), Changed again from ,0.0025,0
+		CDM_VoltDiff(CDM_A116,1,Measure_1_12,1,mV5000,12,False,0,60,0.015625,-6.25) '(Dirty Flow), Changed from Mult(0.005), Offset(-0.0975), Changed again from ,0.0025,0
+		CDM_VoltDiff(CDM_A116,1,Measure_1_13,1,mV5000,13,False,0,60,0.115625,-46.25) '(Clean Temp), Changed from Mult(0.0625), Offset(-25)
+		CDM_VoltDiff(CDM_A116,1,Measure_1_14,1,mV5000,14,False,0,60,0.115625,-46.25) '(Dirty Temp), Changed from Mult(0.0625), Offset(-25)
+		CDM_VoltDiff(CDM_A116,1,Measure_1_15,1,mV5000,15,False,0,60,0.0625,-25) '(Gas Sensor 1_1)
+		CDM_VoltDiff(CDM_A116,1,Measure_1_16,1,mV5000,16,False,0,60,0.0625,-25) '(Gas Sensor 1_2)
+'=================================================================================================================================================
+'Temporary location for Mass Flow Meter
+'-------------------------------------------------------------------------------------------------------------------------------------------------  
+    'CDM_VoltDiff (CDM_A116,1,MassFlow,1,mV5000,6,False,0,60,0.2125,-85)
+    PulseCount (MassFlowTotal,1,U11,1,0,0.0567,0)
+    
+'========================================================================
+'OPS 2 Measurements, CDM 2
+'------------------------------------------------------------------------
+		CDM_Battery(CDM_A116,2,CDMBattV_3)'Default Battery Voltage measurement 'CDM1BattV' on CDM-A116 with CPI address 1
+		CDM_PanelTemp(CDM_A116,2,CDMPTempC_3(),4,1,60)'Default Wiring Panel Temperature measurements 'CDMPTempC()' on CDM-A116 with CPI address 1
+    CDM_VoltDiff(CDM_A116,2,Measure_2_1,1,mV5000,1,False,0,60,TankMult(8),TankOffs(8))'(Gas Buster 2)
+		CDM_VoltDiff(CDM_A116,2,Measure_2_2,1,mV5000,2,False,0,60,TankMult(9),TankOffs(9))'(OTT 2)
+		CDM_VoltDiff(CDM_A116,2,Measure_2_3,1,mV5000,3,False,0,60,TankMult(10),TankOffs(10))'(Brine 1,2)
+		CDM_VoltDiff(CDM_A116,2,Measure_2_4,1,mV5000,4,False,0,60,TankMult(11),TankOffs(11))'(Brine 2,2)
+		CDM_VoltDiff(CDM_A116,2,Measure_2_5,1,mV5000,5,False,0,60,TankMult(12),TankOffs(12))'(Brine 3,2)
+		CDM_VoltDiff(CDM_A116,2,Measure_2_6,1,mV5000,6,False,0,60,TankMult(13),TankOffs(13))'(Brine 4,2)
+		CDM_VoltDiff(CDM_A116,2,Measure_2_7,1,mV5000,7,False,0,60,TankMult(14),TankOffs(14))'(Fresh 2)
+		CDM_VoltDiff(CDM_A116,2,FCIMassFlow,1,mV5000,8,False,0,60,0.625125945,-249.4252521)'FCI Mass Flow Meter
+		CDM_VoltDiff(CDM_A116,2,Measure_2_9,1,mV5000,9,False,0,60,9.375,-3750)'(Clean Pressure 2)
+		CDM_VoltDiff(CDM_A116,2,Measure_2_10,1,mV5000,10,False,0,60,9.375,-3750)'(Dirty Pressure 2)
+		CDM_VoltDiff(CDM_A116,2,Measure_2_11,1,mV5000,11,False,0,60,0.015625,-6.25)'(Clean Flow 2), Changed from Mult(0.005), Offset(-0.07), Changed again from ,0.0025,0
+		CDM_VoltDiff(CDM_A116,2,Measure_2_12,1,mV5000,12,False,0,60,0.015625,-6.25)'(Dirty Flow 2), Changed from Mult(0.005), Offset(-0.06), Changed again from ,0.0025,0
+		CDM_VoltDiff(CDM_A116,2,Measure_2_13,1,mV5000,13,False,0,60,0.115625,-46.25)'(Clean Temp 2), Changed from Mult(0.0625), Offset(-25)
+		CDM_VoltDiff(CDM_A116,2,Measure_2_14,1,mV5000,14,False,0,60,0.115625,-46.25)'(Dirty Temp 2), Changed from Mult(0.0625), Offset(-25)
+		CDM_VoltDiff(CDM_A116,2,Measure_2_15,1,mV5000,15,False,0,60,0.0625,-25)'(Gas Sensor 2_1)
+		CDM_VoltDiff(CDM_A116,2,Measure_2_16,1,mV5000,16,False,0,60,0.0625,-25)'(Gas Sensor 2_2)
+		
+'========================================================================
+'Chemical Skid/Twisted Sister, CDM 3
+'------------------------------------------------------------------------
+  SerialOpen (ComC1,9600,48,0,500,4)
+  ModbusMaster (MiniHydraResult,ComC1,9600,1,3,MiniHydra,31,5,3,100,3)
+
+'======================================================================
+'Gas Analyzer
+'----------------------------------------------------------------------
+  SerialOpen (ComC3,57600,48,0,500,4)
+  ModbusMaster (ModBusResult,ComC3,57600,1,4,GasAnalysis,2,14,3,100,2)
+'======================================================================
+  Scale = ((ScaleRaw - 3277) * 0.00030518 / 60)
+  Bio = ((BioRaw - 3277) * 0.00030518 / 60)
+  FR = (FRRaw - 3277) * 0.00061036
+  PoP = ((PoPRaw - 3277) * 0.00030518 / 60)
+  
+  TotalRun (ScaleTotal,1,(Scale/120),100000,ScaleReset)
+  TotalRun (BioTotal,1,(Bio/120),100000,BioReset)
+  TotalRun (PoPTotal,1,(PoP/120),100000,PoPReset)
+  TotalRun (FRTotal,1,(FR/120),100000,FRReset)
+  TotalRun (GelTotal,1,(Gel/120),100000,GelReset)
+'========================================================================
+    
+'  ScaleReset(1) = 0
+'  BioReset(1) = 0
+'  GelReset(1) = 0
+'  FRReset(1) = 0
+'  PoPReset(1) = 0
+'  ScaleReset(2) = 0
+'  BioReset(2) = 0
+'  GelReset(2) = 0
+'  FRReset(2) = 0
+'  PoPReset(2) = 0
+
+'    TotalRun (ScaleTotal(1),1,(Scale(1)/60),10000,ScaleReset(1))
+'    TotalRun (BioTotal(1),1,(Bio(1)/60),10000,BioReset(1))
+'    TotalRun (PoPTotal(1),1,(PoP(1)/60),10000,PoPReset(1))
+'    TotalRun (FRTotal(1),1,(FR(1)/60),10000,FRReset(1))
+'    TotalRun (GelTotal(1),1,(Gel(1)/60),10000,GelReset(1))
+'    TotalRun (ScaleTotal(2),1,(Scale(2)/60),10000,ScaleReset(2))
+'    TotalRun (BioTotal(2),1,(Bio(2)/60),10000,BioReset(2))
+'    TotalRun (PoPTotal(2),1,(PoP(2)/60),10000,PoPReset(2))
+'    TotalRun (FRTotal(2),1,(FR(2)/60),10000,FRReset(2))
+'    TotalRun (GelTotal(2),1,(Gel(2)/60),10000,GelReset(2))
+'=======================================================================================================================================================
+    
+		'Call Data Tables and Store Data
+	CallTable OPS_1
+	CallTable OPS_2
+	CallTable OPS1_MPD
+	CallTable OPS2_MPD
+	CallTable MiniHydraOps1
+	CallTable Emissions
+
+    If Dirty_Rate_1 <= 0 
+      Dirty_Rate_1 = 0
+    EndIf
+    If Dirty_Rate_2 <= 0 
+      Dirty_Rate_2 = 0
+    EndIf
+
+'------------------------------------------------------------------------
+
+    Clean_Total_1 = Clean_Total_1 + Clean_Pulse_1
+    Clean_Total_2 = Clean_Total_2 + Clean_Pulse_2
+    Dirty_Total_1 = Dirty_Total_1 + Dirty_Pulse_1
+    Dirty_Total_2 = Dirty_Total_2 + Dirty_Pulse_2
+
+'========================================================================
+' PSI Transducer Offset to compensate for drop in mA reading caused by cable length
+'========================================================================
+    If Press_Offset_Switch(1) = -1
+      Press_Offset(1) = Press_Clean_Raw_1
+      Press_Offset_Switch(1) = 0
+    End If  
+    If Press_Offset_Switch(2) = -1
+      Press_Offset(2) = Press_Dirty_Raw_1
+      Press_Offset_Switch(2) = 0
+    End If  
+    If Press_Offset_Switch(3) = -1
+      Press_Offset(3) = Press_Clean_Raw_2
+      Press_Offset_Switch(3) = 0
+    End If  
+    If Press_Offset_Switch(4) = -1
+      Press_Offset(4) = Press_Dirty_Raw_2
+      Press_Offset_Switch(4) = 0
+    End If  
+
+    Press_Clean_1 = Press_Clean_Raw_1 - Press_Offset(1)
+    Press_Dirty_1 = Press_Dirty_Raw_1 - Press_Offset(2)
+    Press_Clean_2 = Press_Clean_Raw_2 - Press_Offset(3)
+    Press_Dirty_2 = Press_Dirty_Raw_2 - Press_Offset(4)
+
+'========================================================================
+' Temperature Transducer Offset to compensate for drop in mA reading caused by cable length
+'========================================================================
+    Temp_Clean_Raw_1_F = Temp_Clean_Raw_1 '''* 1.8 + 32  '''Removed Celsius conversion 
+    Temp_Dirty_Raw_1_F = Temp_Dirty_Raw_1 '''* 1.8 + 32  '''Removed Celsius conversion
+    Temp_Clean_1_F = Temp_Clean_Raw_1_F - Temp_F_Offset(1)
+    Temp_Dirty_1_F = Temp_Dirty_Raw_1_F - Temp_F_Offset(2)
+
+    If Temp_Offset_Switch(1) = -1
+      Temp_F_Offset(1) = Temp_Clean_Raw_1_F - Temp_F_Measured(1)
+      Temp_Offset_Switch(1) = 0
+    EndIf  
+    If Temp_Offset_Switch(2) = -1
+      Temp_F_Offset(2) = Temp_Dirty_Raw_1_F - Temp_F_Measured(2)
+      Temp_Offset_Switch(2) = 0
+    EndIf  
+'========================================================================
+' Check/Set Tank Level Alarms
+'========================================================================
+
+    If GasBuster_Level_1 > Upper_Level_Alarm_Limit(1)OR GasBuster_Level_1 < Lower_Level_Alarm_Limit(1) 'Changed from GB_Level_1
+      Alarm_On(1) = -1
+    Else
+      Alarm_On(1) = 0
+    EndIf    
+
+    If OTT_Level_1 > Upper_Level_Alarm_Limit(2)OR OTT_Level_1 < Lower_Level_Alarm_Limit(2)
+      Alarm_On(2) = -1
+    Else
+      Alarm_On(2) = 0
+    EndIf    
+
+    If Brine_1_Level_1 > Upper_Level_Alarm_Limit(3)OR Brine_1_Level_1 < Lower_Level_Alarm_Limit(3)
+      Alarm_On(3) = -1
+    Else
+      Alarm_On(3) = 0
+    EndIf    
+
+    If Brine_2_Level_1 > Upper_Level_Alarm_Limit(4)OR Brine_2_Level_1 < Lower_Level_Alarm_Limit(4)
+      Alarm_On(4) = -1
+    Else
+      Alarm_On(4) = 0
+    EndIf    
+
+    If Brine_3_Level_1 > Upper_Level_Alarm_Limit(5)OR Brine_3_Level_1 < Lower_Level_Alarm_Limit(5)
+      Alarm_On(5) = -1
+    Else
+      Alarm_On(5) = 0
+    EndIf    
+
+    If Brine_4_Level_1 > Upper_Level_Alarm_Limit(6)OR Brine_4_Level_1 < Lower_Level_Alarm_Limit(6)
+      Alarm_On(6) = -1
+    Else
+      Alarm_On(6) = 0
+    EndIf       
+
+    If Fresh_Level_1 > Upper_Level_Alarm_Limit(8)OR Fresh_Level_1 < Lower_Level_Alarm_Limit(8)
+      Alarm_On(8) = -1
+    Else
+      Alarm_On(8) = 0
+    EndIf    
+
+    If GasBuster_Level_2 > Upper_Level_Alarm_Limit(9)OR GasBuster_Level_2 < Lower_Level_Alarm_Limit(9) ' Changed this one from GB_Level_2
+      Alarm_On(9) = -1
+    Else
+      Alarm_On(9) = 0
+    EndIf    
+
+    If OTT_Level_2 > Upper_Level_Alarm_Limit(10)OR OTT_Level_2 < Lower_Level_Alarm_Limit(10)
+      Alarm_On(10) = -1
+    Else
+      Alarm_On(10) = 0
+    EndIf    
+
+    If Brine_1_Level_2 > Upper_Level_Alarm_Limit(11)OR Brine_1_Level_2 < Lower_Level_Alarm_Limit(11)
+      Alarm_On(11) = -1
+    Else
+      Alarm_On(11) = 0
+    EndIf    
+
+    If Brine_2_Level_2 > Upper_Level_Alarm_Limit(12)OR Brine_2_Level_2 < Lower_Level_Alarm_Limit(12)
+      Alarm_On(12) = -1
+    Else
+      Alarm_On(12) = 0
+    EndIf    
+
+    If Brine_3_Level_2 > Upper_Level_Alarm_Limit(13)OR Brine_3_Level_2 < Lower_Level_Alarm_Limit(13)
+      Alarm_On(13) = -1
+    Else
+      Alarm_On(13) = 0
+    EndIf    
+
+    If Brine_4_Level_2 > Upper_Level_Alarm_Limit(14)OR Brine_4_Level_2 < Lower_Level_Alarm_Limit(14)
+      Alarm_On(14) = -1
+    Else
+      Alarm_On(14) = 0
+    EndIf     
+
+    If Fresh_Level_2 > Upper_Level_Alarm_Limit(16)OR Fresh_Level_2 < Lower_Level_Alarm_Limit(16)
+      Alarm_On(16) = -1
+    Else
+      Alarm_On(16) = 0
+    EndIf    
+
+'========================================================================
+
+'    FieldCal (2,Press_Clean_Raw_1,1,Press_Clean_1_Mult,Press_Offset(1),CalMode,Press_Clean_1,1,3)
+
+    If UpdateNotes_1 = -1
+      Plug_Difference_1 = Plug_Dirty_Total_1 - Plug_Clean_Total_1 
+      Events_1 = 9.5      
+      CallTable EventTable_1
+      UpdateNotes_1 = 0
+    EndIf  
+
+    If UpdateNotes_2 = -1
+      Plug_Difference_2 = Plug_Dirty_Total_2 - Plug_Clean_Total_2 
+      Events_2 = 9.5      
+      CallTable EventTable_2
+      UpdateNotes_2 = 0
+    EndIf  
+
+    
+    If Save_Offsets = -1
+      CallTable Adjustments
+    EndIf  
+
+      Temp_Clean_Raw_2_F = Temp_Clean_Raw_2 '''* 1.8 + 32  ***Removed Celsius conversion
+      Temp_Dirty_Raw_2_F = Temp_Dirty_Raw_2 '''* 1.8 + 32  ***Removed Celsius conversion
+      Temp_Clean_2_F = Temp_Clean_Raw_2_F - Temp_F_Offset(3)
+      Temp_Dirty_2_F = Temp_Dirty_Raw_2_F - Temp_F_Offset(4)
+'========================================================================
+   
+    If Record_OPS_1 = -1
+      CallTable OPS_1
+    EndIf
+    If Record_OPS_2 = -1
+      CallTable OPS_2
+    EndIf
+      
+	NextScan
+EndProg
+'}
